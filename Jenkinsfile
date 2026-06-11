@@ -4,7 +4,7 @@ pipeline {
 
     stages {
 
-        stage('Check Docker Credentials') {
+        stage('Docker Login Test') {
             steps {
                 withCredentials([
                     usernamePassword(
@@ -14,7 +14,8 @@ pipeline {
                     )
                 ]) {
                     bat '''
-                    echo Docker Username: %DOCKER_USER%
+                    docker logout
+                    docker login -u "%DOCKER_USER%" -p "%DOCKER_PASS%"
                     '''
                 }
             }

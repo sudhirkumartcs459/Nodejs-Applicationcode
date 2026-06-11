@@ -2,25 +2,9 @@ pipeline {
 
     agent any
 
-    environment {
-        IMAGE_NAME = "sudhirkumar123/nodejs-20"
-    }
-
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                bat "docker build -t %IMAGE_NAME%:%BUILD_NUMBER% ."
-            }
-        }
-
-        stage('Docker Login') {
+        stage('Check Docker Credentials') {
             steps {
                 withCredentials([
                     usernamePassword(
@@ -30,15 +14,9 @@ pipeline {
                     )
                 ]) {
                     bat '''
-                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                    echo Docker Username: %DOCKER_USER%
                     '''
                 }
-            }
-        }
-
-        stage('Push Image') {
-            steps {
-                bat "docker push %IMAGE_NAME%:%BUILD_NUMBER%"
             }
         }
     }
